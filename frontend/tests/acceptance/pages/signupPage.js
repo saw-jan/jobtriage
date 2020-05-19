@@ -3,10 +3,14 @@ const { I } = inject();
 module.exports = {
   url: '/signup',
   fields: {
-    name: '//label[contains(text(),"name")]/parent::div/div/input[contains(@class, "MuiInputBase-input")]',
-    email: '//label[contains(text(),"email")]/parent::div/div/input[contains(@class, "MuiInputBase-input")]',
-    password: '//label[contains(text(),"password")]/parent::div/div/input[contains(@class, "MuiInputBase-input")]',
-    confirmPassword: '//label[contains(text(),"confirm password")]/parent::div/div/input[contains(@class, "MuiInputBase-input")]',
+    name: '//label[contains(text(),"Name")]/parent::div/div/input[contains(@class, "MuiInputBase-input")]',
+    email: '//label[contains(text(),"Email")]/parent::div/div/input[contains(@class, "MuiInputBase-input")]',
+    password: '//label[contains(text(),"Password")]/parent::div/div/input[contains(@class, "MuiInputBase-input")]',
+    confirmPassword: '//label[contains(text(),"Confirm password")]/parent::div/div/input[contains(@class, "MuiInputBase-input")]',
+  },
+  elements: {
+    error_lbl: '//*[@id="root"]/div/div/div/div/form/p[2]',
+    login_lbl: '//*[@id="root"]/div/div/div/div/form/p[1]/span'
   },
   signUp(name, email, password, confirmPassword) {
     I.waitForVisible(this.fields.name);

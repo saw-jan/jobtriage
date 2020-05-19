@@ -4,9 +4,7 @@ const signupPage = require('../pages/signupPage');
 
 const apiUrl = process.env.REACT_APP_SERVER_URL || 'http://localhost:3001';
 
-const FIELDS = signupPage.fields;
-const UNMATCHED_ERR = "//form//p[contains(text(),'Password and Confirm password is not same')]";
-const INVALID_MAIL_ERR = "//form//p[contains(text(),'Enter a valid email')]";
+const ELEMENT = signupPage.elements;
 
 // Given('the user has signed up with name {string}, email {string} password {string}', (name, email, password) => {
 //   axios.post(`${apiUrl}/auth/register`, { name, email, password });
@@ -31,35 +29,41 @@ Given('the user has browsed to signup page',()=>{
 
 // @emptyfields , invalidmail
 When('user tries to sign up with username {string}, email {string}, password {string} and confirm password {string}',(username,email,password,confirmpassword)=>{
-  fillFormAndSubmit(username,email,password,confirmpassword)
+  signupPage.signUp(username,email,password,confirmpassword)
 })
+
 // @unmatchedpass , @validsignup
 When('user tries to sign up with following data:',(table)=>{
   const data = table.parse().hashes()[0];
-  fillFormAndSubmit(data.username,data.mail,data.password,data.confirmpassword);
+  signupPage.signUp(data.username,data.mail,data.password,data.confirmpassword);
+})
+
+// @gotologin
+When('user tries to go to login page using link',()=>{
+  I.click(ELEMENT.login_lbl);
+})
+Then('user should be redirected to login page.',()=>{
+  I.waitForElement('//*[@id="root"]/div/div/div/div/form');
+  I.see('LOGIN');
+  I.see('Sign up here');
 })
 
 // successful registration
 Then('the user should be redirected to Dashboard.',()=>{
-  I.amOnPage(apiUrl+"/dashboard");
+  // I.amOnPage(apiUrl+"/dashboard");
 })
+
 // error with empty input fields
 Then('a required message {string} should be displayed.',(message)=>{
   I.see(message);
 })
+
 // error with invalids mail formats 
 Then('an email invalid message {string} should be displayed.',(message)=>{
-  I.see(message,INVALID_MAIL_ERR);
-})
-// error with unmatched password
-Then('a password not matched message {string} should be displayed.',(message)=>{
-  I.see(message,UNMATCHED_ERR);
+  I.see(message,ELEMENT.error_lbl);
 })
 
-function fillFormAndSubmit(username,email,password,confirmpassword){
-  I.fillField(FIELDS.name,username);
-  I.fillField(FIELDS.email, email);
-  I.fillField(FIELDS.password, password);
-  I.fillField(FIELDS.confirmPassword, confirmpassword);
-  I.click('Sign Up');
-}
+// error with unmatched password
+Then('a password not matched message {string} should be displayed.',async (message)=>{
+  I.see(message,ELEMENT.error_lbl);
+})

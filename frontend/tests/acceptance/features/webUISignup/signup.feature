@@ -41,3 +41,8 @@ Feature: signup a user
       | username  | mail               | password   | confirmpassword   |
       | user102   | user102@mail.com   | mypassword | yourpassword      |
     Then a password not matched message "Password and Confirm password is not same" should be displayed.
+  
+  @gotologin
+  Scenario: Goto login page
+    When user tries to go to login page using link
+    Then user should be redirected to login page.
