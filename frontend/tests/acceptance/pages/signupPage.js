@@ -3,15 +3,15 @@ const { I } = inject();
 module.exports = {
   url: '/signup',
   fields: {
-    username: '//label[contains(text(),"Name")]/parent::div/div/input[contains(@class, "MuiInputBase-input")]',
-    email: '//label[contains(text(),"Email")]/parent::div/div/input[contains(@class, "MuiInputBase-input")]',
-    password: '//label[contains(text(),"Password")]/parent::div/div/input[contains(@class, "MuiInputBase-input")]',
-    confirmPassword: '//label[contains(text(),"Confirm password")]/parent::div/div/input[contains(@class, "MuiInputBase-input")]',
+    username: '//label[contains(text(),"Name")]/parent::div//input[contains(@class, "MuiInputBase-input")]',
+    email: '//label[contains(text(),"Email")]/parent::div//input[contains(@class, "MuiInputBase-input")]',
+    password: '//label[contains(text(),"Password")]/parent::div//input[contains(@class, "MuiInputBase-input")]',
+    confirmPassword: '//label[contains(text(),"Confirm password")]/parent::div//input[contains(@class, "MuiInputBase-input")]',
   },
   elements: {
-    error_lbl: '//*[@id="root"]/div/div/div/div/form/p[2]',
-    login_lbl: '//*[@id="root"]/div/div/div/div/form/p[1]/span',
-    signup_btn: '//*[@id="root"]/div/div/div/div/form/button/span[1]'
+    error_lbl: '//form/p[@class="makeStyles-error-5"]',
+    login_lbl: '//form/p/span[contains(@class,"makeStyles-span-7")]',
+    signup_btn: '//form/button/span[contains(.,"Sign Up")]'
   },
   signUp(username, email, password, confirmPassword) {
     this.fillUsername(username);
@@ -37,7 +37,7 @@ module.exports = {
     I.fillField(this.fields.confirmPassword, confirmpassword);
   },
   clickSignUp(){
-    I.waitForVisible(this.elements.signup_btn);
+    I.waitForElement(this.elements.signup_btn);
     I.click(this.elements.signup_btn);
   },
   goToLogin(){
