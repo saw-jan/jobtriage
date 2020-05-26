@@ -8,11 +8,11 @@ Feature: Signup a user
 
   @validsignup
   Scenario Outline: Signup a valid user
-    When user tries to sign up with username "<username>", email "<mail>", password "<password>" and confirm password "<confirmPassword>"
-    Then the user "<username>" with email "<mail>" should be redirected to dashboard
+    When user tries to sign up with username "<username>", valid email "<mail>", password "<password>" and confirm password "<confirmPassword>"
+    Then the user should be redirected to email not verified page
     Examples:
       | username  | mail               | password   | confirmPassword |
-      | test      | test@gmail.com     | testpass   | testpass        |
+      | test      | test@mail.com      | testpass   | testpass        |
 
   @emptyfields
   Scenario Outline: Signup with empty input fields

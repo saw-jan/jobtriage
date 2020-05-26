@@ -4,9 +4,10 @@ Feature: Add a new job application
     So that I can keep record and manage my applications
     
     Background: User has access to dashboard
-        Given user has logged in to dashboard with following data:
-            | email          | password |
-            | user1@mail.com | user1    |
+        Given user has registered with following data:
+            | name      | email              | password   |
+            | test      | test@mail.com      | testpass   |
+        And logged in to dashboard with email "test@mail.com" and password "testpass"
         And the user has opened new job application dialog from dashboard
 
     @addJob

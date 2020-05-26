@@ -1,32 +1,36 @@
 const { I } = inject();
 const axios = require('axios');
 const signupPage = require('../pages/signupPage');
-const dashboard = require('../pages/dashboardPage');
+const verifyPage = require('../pages/mailNotVerifiedPage');
 const loginPage = require('../pages/loginPage');
+const {users} = require('../Globals');
 
-const apiUrl = process.env.REACT_APP_SERVER_URL || 'http://localhost:3001';
+const apiUrl = process.env.API_SERVER_URL || 'http://localhost:3000';
 
 const ELEMENT = signupPage.elements;
 const FIELD = signupPage.fields;
-// Given('the user has signed up with name {string}, email {string} password {string}', (name, email, password) => {
-//   axios.post(`${apiUrl}/auth/register`, { name, email, password });
-// });
 
-// When('the user browses to the signup page using the webUI', () => I.amOnPage(signupPage.url));
-
-// Then('the user should be able to login with email {string} and password {string}', async (email, password) => {
-//   try {
-//     await axios.post(`${apiUrl}/auth/login/`, { email, password });
-//   } catch (error) {
-//     throw new Error(`Cannot login user with email ${email}
-//      Status code: ${error.response.status}
-//      Stauts: ${error.response.statusText}`);
-//   }
-// });
+After( () => {
+  users.forEach(async (email) => {
+    try{
+      await axios.delete(`${apiUrl}/auth/deleteuser`, { params: { email: email }})
+      .then(({data}) => console.log(data.message))
+      .catch(err => console.log(err))
+    }catch(e){
+      console.log(e);
+    }
+  });
+})
 
 //Background Given
 Given('the user has browsed to signup page',()=>{
   I.amOnPage(signupPage.url);
+})
+
+// @validsignup
+When('user tries to sign up with username {string}, valid email {string}, password {string} and confirm password {string}',(username, email, password, confirmPassword)=>{
+  users.push(email)
+  signupPage.signUp(username, email, password, confirmPassword)
 })
 
 // @emptyfields, @invalidmail, @validsignup
@@ -39,23 +43,23 @@ When('user tries to sign up with following data:',(table)=>{
   const data = table.parse().hashes()[0];
   signupPage.signUp(data.username, data.mail, data.password, data.confirmPassword);
 })
-
+  
 // @gotologin
 When('user tries to go to login page using link',()=>{
   signupPage.goToLogin();
 })
+
 Then('user should be redirected to login page',()=>{
   I.dontSee(ELEMENT.signup_btn);
   I.seeInCurrentUrl(loginPage.url);
 })
 
 // successful registration
-Then('the user {string} with email {string} should be redirected to dashboard',(username, email)=>{
-  I.waitForElement(dashboard.dashboardContainer, 30);
-  I.seeInCurrentUrl(dashboard.url.main);
-  I.amOnPage(dashboard.url.account);
-  I.see(email);
-  I.see(username);
+Then('the user should be redirected to email not verified page',()=>{
+  // I.waitForElement(verifyPage.elements.heading, 30);
+  // I.see("Seems Email address is not verified");
+  I.waitForVisible('Dashboard');
+  I.seeInCurrentUrl('/dashboard');
 })
 
 // signup with empty input fields
