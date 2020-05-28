@@ -15,6 +15,7 @@ env:
     - CLIENT_HOST="http://localhost:3001"
     - HOST_URL="http://localhost:3000"
     - notification_email="sender@mail.com"
+    - RAILS_ENV="test"
 install:
   - bundle install
   - cd $TRAVIS_BUILD_DIR/frontend ; yarn install
@@ -26,5 +27,5 @@ before-script:
   - export PORT=3001 ; yarn start &
   - sleep 3
 script:
-  - npx codeceptjs run --debug --grep @canceladd
+  - npx codeceptjs run --steps
   

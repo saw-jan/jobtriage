@@ -1,3 +1,5 @@
+const { I } = inject();
+
 module.exports = {
   url: {
     main: '/dashboard',
@@ -9,6 +11,7 @@ module.exports = {
     jobStatusBoardTitle: '//header[contains(@class,"jTaSwn")]'
   },
   getJobStatusContext(jobStatus){
-    return '//header[contains(@class,"jTaSwn")]/span[contains(.,"'+jobStatus+'")]/ancestor::section/div[contains(@class,"sc-fzoLsD")]';
+    I.waitForElement(this.elements.jobStatusBoardTitle);
+    return `${this.elements.jobStatusBoardTitle}/span[contains(.,"${jobStatus}")]/ancestor::section/div[contains(@class,"sc-fzoLsD")]`;
   }
 };

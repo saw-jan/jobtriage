@@ -11,14 +11,15 @@ const ELEMENT =  newJob.elements;
 
 Given('user has registered with following data:', async (table) => {
     const newUser = table.parse().hashes()[0];
+    users.push({ email: newUser.email, password: newUser.password });
     try{
         await axios.post(`${apiUrl}/auth/register`, newUser)
         .then(({data}) => {
-            users.push(newUser.email)
+            // users.push({ email: newUser.email, password: newUser.password });
             console.log(data.message)
         })
         .catch(err=>{
-            console.log(err);
+            console.log('Cannot register new user');
         })
     }catch(e){
         console.log(e)

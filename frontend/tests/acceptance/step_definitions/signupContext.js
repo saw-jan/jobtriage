@@ -3,7 +3,9 @@ const axios = require('axios');
 const signupPage = require('../pages/signupPage');
 const verifyPage = require('../pages/mailNotVerifiedPage');
 const loginPage = require('../pages/loginPage');
-const {users} = require('../Globals');
+const dashboard = require('../pages/dashboardPage');
+const { users } = require('../Globals');
+const assert = require('assert');
 
 const apiUrl = process.env.API_SERVER_URL || 'http://localhost:3000';
 
@@ -11,15 +13,19 @@ const ELEMENT = signupPage.elements;
 const FIELD = signupPage.fields;
 
 After( () => {
-  users.forEach(async (email) => {
-    try{
-      await axios.delete(`${apiUrl}/auth/deleteuser`, { params: { email: email }})
-      .then(({data}) => console.log(data.message))
-      .catch(err => console.log(err))
-    }catch(e){
-      console.log(e);
-    }
-  });
+  if(users.length!=0){
+    users.forEach(async (user) => {
+      try{
+        await axios.delete(`${apiUrl}/auth/deleteuser`, { params: { email: user.email, password: user.password }})
+        .then(({data}) => console.log(data.message))
+        .catch(err => console.log(`Cannot delete created user\nError: ${err.response.status}. ${err.response.statusText}\n<< Error Details >>${err.response.data.error}\n`))
+        users.shift();
+      }catch(e){
+        console.log(e);
+      }
+    });
+    users.length = 0;
+  }
 })
 
 //Background Given
@@ -28,9 +34,11 @@ Given('the user has browsed to signup page',()=>{
 })
 
 // @validsignup
-When('user tries to sign up with username {string}, valid email {string}, password {string} and confirm password {string}',(username, email, password, confirmPassword)=>{
-  users.push(email)
-  signupPage.signUp(username, email, password, confirmPassword)
+When('user tries to sign up with username {string}, valid email {string}, password {string} and confirm password {string}', async (username, email, password, confirmPassword)=>{
+  await signupPage.signUp(username, email, password, confirmPassword)
+  await I.wait(5);
+  await I.seeInCurrentUrl(dashboard.url.main);
+  users.push({ email: email, password: password });
 })
 
 // @emptyfields, @invalidmail, @validsignup
@@ -55,11 +63,18 @@ Then('user should be redirected to login page',()=>{
 })
 
 // successful registration
-Then('the user should be redirected to email not verified page',()=>{
-  // I.waitForElement(verifyPage.elements.heading, 30);
-  // I.see("Seems Email address is not verified");
-  I.waitForVisible('Dashboard');
-  I.seeInCurrentUrl('/dashboard');
+Then('the user should be able to login with email {string} and password {string}', async (email, password)=>{
+  try{
+    await axios.post(`${apiUrl}/auth/login`, { email, password })
+    .then(({data}) => {
+      console.log(`Login Successful\nToken:\n${data.message.token}`);
+    })
+    .catch(err => {
+      console.log(`Cannot login\n${err}`);
+    })
+  }catch(e){
+    console.log(e);
+  }
 })
 
 // signup with empty input fields

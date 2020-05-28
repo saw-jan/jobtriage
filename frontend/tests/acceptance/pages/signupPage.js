@@ -13,35 +13,35 @@ module.exports = {
     login_lbl: '//form/p/span[contains(@class,"makeStyles-span-7")]',
     signup_btn: '//form/button/span[contains(.,"Sign Up")]'
   },
-  signUp(username, email, password, confirmPassword) {
-    this.fillUsername(username);
-    this.fillEmail(email);
-    this.fillPassword(password);
-    this.fillConfirmPassword(confirmPassword);
-    this.clickSignUp();
+ async signUp(username, email, password, confirmPassword) {
+    await this.fillUsername(username);
+    await this.fillEmail(email);
+    await this.fillPassword(password);
+    await this.fillConfirmPassword(confirmPassword);
+    await this.clickSignUp();
   },
-  fillUsername(username){
-    I.waitForVisible(this.fields.username);
-    I.fillField(this.fields.username,username);
+  async fillUsername(username){
+    await I.waitForElement(this.fields.username);
+    await I.fillField(this.fields.username,username);
   },
-  fillEmail(email){
-    I.waitForVisible(this.fields.email);
-    I.fillField(this.fields.email,email);
+  async fillEmail(email){
+    await I.waitForElement(this.fields.email);
+    await I.fillField(this.fields.email,email);
   },
-  fillPassword(password){
-    I.waitForVisible(this.fields.password);
-    I.fillField(this.fields.password,password);
+  async fillPassword(password){
+    await I.waitForElement(this.fields.password);
+    await I.fillField(this.fields.password,password);
   },
-  fillConfirmPassword(confirmpassword){
-    I.waitForVisible(this.fields.confirmPassword);
-    I.fillField(this.fields.confirmPassword, confirmpassword);
+  async fillConfirmPassword(confirmPassword){
+    await I.waitForElement(this.fields.confirmPassword);
+    await I.fillField(this.fields.confirmPassword, confirmPassword);
   },
-  clickSignUp(){
-    I.waitForElement(this.elements.signup_btn);
-    I.click(this.elements.signup_btn);
+  async clickSignUp(){
+    await I.waitForElement(this.elements.signup_btn);
+    await I.click(this.elements.signup_btn);
   },
   goToLogin(){
-    I.waitForVisible(this.elements.login_lbl);
+    I.waitForElement(this.elements.login_lbl);
     I.click(this.elements.login_lbl);
   }
 

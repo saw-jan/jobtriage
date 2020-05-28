@@ -9,7 +9,7 @@ Feature: Signup a user
   @validsignup
   Scenario Outline: Signup a valid user
     When user tries to sign up with username "<username>", valid email "<mail>", password "<password>" and confirm password "<confirmPassword>"
-    Then the user should be redirected to email not verified page
+    Then the user should be able to login with email "<mail>" and password "<password>"
     Examples:
       | username  | mail               | password   | confirmPassword |
       | test      | test@mail.com      | testpass   | testpass        |
